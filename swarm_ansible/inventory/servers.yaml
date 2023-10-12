@@ -1,0 +1,9 @@
+all:
+  children:
+    manager:
+      hosts:
+        84.252.129.180:
+    worker:
+      hosts:
+        158.160.46.150:
+        158.160.44.98:

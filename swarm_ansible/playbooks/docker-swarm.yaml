@@ -1,0 +1,37 @@
+- hosts: all
+  roles:
+    - role: docker-swarm 
+
+- hosts: manager
+  tasks:
+    - name: Create a directory swarm
+      file:
+        path: ./swarm
+        state: directory
+        mode: '0755'
+
+    - name: Copy file docker-compose.yml
+      copy:
+        src: ~/swarm_ansible/roles/docker-swarm/files/docker-compose.yml
+        dest: ./swarm/docker-compose.yml
+        owner: ubuntu
+        group: ubuntu
+        mode: '0644'
+
+    - name: Init a new swarm
+      docker_swarm:
+        advertise_addr: 192.168.10.10
+        state: present
+
+- hosts: worker
+  tasks:
+    - name: Add nodes
+      docker_swarm:
+        state: join
+        join_token: SWMTKN-1-<token>
+        remote_addrs: [ '192.168.10.10:2377' ]
+
+- hosts: manager
+  tasks:
+    - name: Run deploy
+      command: sudo docker stack deploy --compose-file swarm/docker-compose.yml stackdemo

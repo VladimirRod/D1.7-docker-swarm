@@ -1,0 +1,10 @@
+---
+- name: Install docker.io
+  apt:
+    pkg:
+       - docker.io
+       - docker-compose
+    update_cache: true
+    state: present
+
+
